@@ -178,6 +178,7 @@ sub propose_fire_bfg {
         confess [1009, 'Target is not a planet.'];
     }
     $building->body->in_jurisdiction($body);
+    $empire->current_session->check_captcha; #require captcha to propose bfg attack
     my $name = $body->name.' ('.$body->x.','.$body->y.')';
     my $proposition = Lacuna->db->resultset('Lacuna::DB::Result::Propositions')->new({
         type            => 'FireBfg',
