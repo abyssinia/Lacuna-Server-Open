@@ -164,6 +164,10 @@ sub propose_fire_bfg {
     unless ($building->level >= 25) {
         confess [1013, 'Parliament must be level 25 to propose using the BFG.',25];
     }
+    # check for cool down
+    if($building->is_working) {
+        confess [1010, 'The BFG is cooling down.']
+    }
     Lacuna::Verify->new(content=>\$reason, throws=>[1005,'Reason cannot be empty.',$reason])->not_empty;
     Lacuna::Verify->new(content=>\$reason, throws=>[1005,'Reason cannot contain HTML tags or entities.',$reason])->no_tags;
     Lacuna::Verify->new(content=>\$reason, throws=>[1005,'Reason cannot contain profanity.',$reason])->no_profanity;
@@ -189,6 +193,10 @@ sub propose_fire_bfg {
     $proposition->station($building->body);
     $proposition->proposed_by($empire);
     $proposition->insert;
+    # start cooldown timer (30 min)
+    $building->start_work({
+        target    => $name
+    }, 60*30)->update;
     return {
         status      => $self->format_status($empire, $building->body),
         proposition => $proposition->get_status($empire),
