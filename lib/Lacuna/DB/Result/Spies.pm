@@ -1689,6 +1689,7 @@ sub can_conduct_advanced_missions {
     if ($self->on_body->empire->alliance_id && $self->on_body->empire->alliance_id == $self->empire->alliance_id) {
         confess [1010, 'You cannot attack your alliance mates.'];
     }
+    return 1 if ($self->on_body->get_type eq 'space station'); # stations can be attacked regardless of rank
     my $ranks = Lacuna->db->resultset('Log::Empire');
     my $defender_rank = $ranks->search( { empire_id => $self->on_body->empire_id },
                                         {rows => 1})->get_column('empire_size_rank')->single;
