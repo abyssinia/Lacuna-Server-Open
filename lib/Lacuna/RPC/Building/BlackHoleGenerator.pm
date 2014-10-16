@@ -291,7 +291,10 @@ sub task_chance {
         throw     => 0,
         reason    => '',
     };
-    ($return->{throw}, $return->{reason}) = check_bhg_neutralized($body);
+    # allow jump zone regardless of bhg neutralization in current jurisdiction
+    unless ($task->{name} eq 'Jump Zone') {
+        ($return->{throw}, $return->{reason}) = check_bhg_neutralized($body);
+    }
     if ($return->{throw} > 0) {
         return $return;
     }
