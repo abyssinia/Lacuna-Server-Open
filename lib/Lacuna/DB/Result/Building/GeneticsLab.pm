@@ -118,9 +118,20 @@ sub total_grafts {
         - 45;
 }
 
+has kasterns_keep => (
+    is      => 'rw',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        return $self->body->get_building_of_class('Lacuna::DB::Result::Building::Permanent::KasternsKeep');
+    },
+);
+
 sub can_experiment {
     my $self = shift;
-    if ($self->total_grafts >= $self->level) {
+    my $keep_level = (defined $self->kasterns_keep) ? $self->kasterns_keep->level : 0;
+    my $bonus_grafts = floor($keep_level / 10);
+    if ($self->total_grafts >= ($self->level + $bonus_grafts)) {
         confess [1013, 'You need to raise your genetics lab level to run more experiments.'];
     }
     return 1;
@@ -139,7 +150,7 @@ sub experiment {
         confess [1011, 'You need 2 essentia to perform a graft experiment.'];
     }
     $empire->spend_essentia({
-        amount  => 2, 
+        amount  => 2,
         reason  => 'genetics lab graft experiment',
     });
     my $graft = 0;
