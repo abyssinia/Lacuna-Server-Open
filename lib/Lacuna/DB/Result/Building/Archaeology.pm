@@ -362,7 +362,7 @@ sub found_plan {
 
 sub found_artifact {
     my ($self, $body, $amlevel) = @_;
-  
+
     my $plan_types = plans_of_type();
     my $artifacts;
     foreach my $building (@{$body->building_cache}) {
@@ -452,7 +452,7 @@ sub can_you_dig_it {
      $ore_total += $body->$ore;
   }
   $ore_total = 10_000 if $ore_total > 10_000;
-  my $glyph = int($mult * $level * $ore_total/20_000)+1; 
+  my $glyph = int($mult * $level * $ore_total/20_000)+1;
   my $resource = int(5/2 * $level);
   my $artifact = 0;
   if (!$arch && (scalar @{$body->building_cache})) {
@@ -517,6 +517,7 @@ sub plans_of_type {
     Lacuna::DB::Result::Building::Permanent::InterDimensionalRift
     Lacuna::DB::Result::Building::Permanent::KalavianRuins
     Lacuna::DB::Result::Building::Permanent::LibraryOfJith
+    Lacuna::DB::Result::Building::Permanent::MassadsHenge
     Lacuna::DB::Result::Building::Permanent::OracleOfAnid
     Lacuna::DB::Result::Building::Permanent::PantheonOfHagness
     Lacuna::DB::Result::Building::Permanent::TempleOfTheDrajilites
@@ -535,7 +536,6 @@ sub plans_of_type {
        Lacuna::DB::Result::Building::Permanent::EssentiaVein
        Lacuna::DB::Result::Building::Permanent::Fissure
        Lacuna::DB::Result::Building::Permanent::KasternsKeep
-       Lacuna::DB::Result::Building::Permanent::MassadsHenge
        Lacuna::DB::Result::Building::Permanent::TheDillonForge
                 )];
   return {
@@ -555,7 +555,7 @@ sub excavators {
 
 sub can_add_excavator {
   my ($self, $body, $on_arrival) = @_;
-    
+
   if (defined($body->empire_id)) {
     confess [1010, $body->name.' was colonized since we launched our excavator.'];
   }
@@ -573,7 +573,7 @@ sub can_add_excavator {
     my $string = "Max Excavators allowed at this Archaeology level is $max_e. You have $digging at sites, and $travel on their way.";
     confess [1009, $string];
   }
-    
+
 # Allowed one per empire per body.
   $count = Lacuna->db->resultset('Lacuna::DB::Result::Excavators')
              ->search({ body_id => $body->id, empire_id => $self->body->empire->id })->count;
